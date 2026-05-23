@@ -1,13 +1,10 @@
 .git
 .github
 node_modules
-.nuxt
-.output
+dist
 .cache
-coverage
 *.log
 .env
 .env.*
 !.env.example
 .DS_Store
-README.md
