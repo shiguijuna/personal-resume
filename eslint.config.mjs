@@ -4,7 +4,7 @@ import pluginVue from 'eslint-plugin-vue'
 import parserVue from 'vue-eslint-parser'
 
 export default tseslint.config(
-  { ignores: ['.nuxt', '.output', 'node_modules', 'dist'] },
+  { ignores: ['dist', 'node_modules', 'src/auto-imports.d.ts', 'src/components.d.ts'] },
   ...pluginVue.configs['flat/recommended'],
   ...tseslint.configs.recommended,
   {
