@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import { navItems, resumeFile } from '@/constants'
 import { useThemeStore } from '@/stores/theme'
 import { useRoute } from 'vue-router'

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import { posts, getAllTags } from '@/data/posts'
 import { useHead } from '@unhead/vue'
 import { siteConfig } from '@/constants'
