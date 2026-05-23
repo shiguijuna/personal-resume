@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   show: boolean
-  colors: { name: string; hex: string }[]
+  colors: readonly { name: string; hex: string }[]
   current: string
   isDark: boolean
 }>()
