@@ -1,31 +1,13 @@
-# Nuxt 3
-.output
-.data
-.nuxt
-nitro
-dist
-
-# Dependencies
 node_modules
-
-# IDE
-.vscode/settings.json
-.idea
-*.swp
-*.swo
-*~
-
-# Environment
-.env
-.env.local
-.env.production
-
-# OS
+dist
 .DS_Store
-Thumbs.db
-
-# Logs
-*.log
-
-# Misc
 *.local
+.env
+.env.*
+!.env.example
+
+src/auto-imports.d.ts
+src/components.d.ts
+
+*.log
+npm-debug.log*
