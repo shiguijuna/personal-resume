@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+.nuxt
+.output
+.cache
+coverage
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+README.md

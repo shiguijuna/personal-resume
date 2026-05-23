@@ -1,0 +1,31 @@
+# Nuxt 3
+.output
+.data
+.nuxt
+nitro
+dist
+
+# Dependencies
+node_modules
+
+# IDE
+.vscode/settings.json
+.idea
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+.env.production
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Misc
+*.local
