@@ -1,7 +1,9 @@
 name: Deploy
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -10,6 +12,7 @@ permissions:
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Build and deploy on server
@@ -40,6 +43,7 @@ jobs:
               git checkout --force "$COMMIT"
             fi
 
+            cd "$SRC_DIR"
             docker build -t personal-resume:latest -t "personal-resume:$COMMIT" .
 
             cat > "$APP_DIR/docker-compose.yml" <<'COMPOSE'
