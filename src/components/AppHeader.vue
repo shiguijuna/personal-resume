@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { navItems, resumeFile } from '@/constants'
 import { useThemeStore } from '@/stores/theme'
-import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 const themeStore = useThemeStore()
 const route = useRoute()
+const router = useRouter()
 
-const scrollActiveHash = ref('#home')
-const manualHash = ref<string | null>(null)
+const activeHash = ref('#home')
+let isManualScrolling = false
 let manualTimer: ReturnType<typeof setTimeout> | null = null
 
 const sectionIds = navItems.map(item => item.href.replace('/#', '#'))
@@ -20,7 +21,7 @@ const startObserver = () => {
   const headerHeight = 68
   observer = new IntersectionObserver(
     (entries) => {
-      if (manualHash.value) return
+      if (isManualScrolling) return
       const visible: { id: string; ratio: number }[] = []
       for (const entry of entries) {
         if (entry.isIntersecting) {
@@ -29,7 +30,7 @@ const startObserver = () => {
       }
       if (visible.length === 0) return
       visible.sort((a, b) => b.ratio - a.ratio)
-      scrollActiveHash.value = visible[0].id
+      activeHash.value = visible[0].id
     },
     { rootMargin: `-${headerHeight}px 0px -40% 0px`, threshold: [0, 0.25, 0.5, 0.75, 1] },
   )
@@ -46,17 +47,28 @@ const stopObserver = () => {
 
 const onNavClick = (href: string) => {
   const hash = href.replace('/', '')
-  manualHash.value = hash
-  scrollActiveHash.value = hash
+  isManualScrolling = true
+  activeHash.value = hash
   if (manualTimer) clearTimeout(manualTimer)
   manualTimer = setTimeout(() => {
-    manualHash.value = null
+    isManualScrolling = false
     manualTimer = null
-  }, 800)
+  }, 1000)
+
+  const el = document.querySelector(hash)
+  if (el) {
+    const headerHeight = 68
+    const top = el.getBoundingClientRect().top + window.scrollY - headerHeight
+    window.scrollTo({ top, behavior: 'smooth' })
+  }
+
+  router.push({ path: '/', hash: hash.slice(1) })
 }
 
 onMounted(() => {
-  if (route.path === '/') startObserver()
+  if (route.path === '/') {
+    nextTick(startObserver)
+  }
 })
 
 onBeforeUnmount(() => {
@@ -76,7 +88,7 @@ const activeHref = computed(() => {
   if (route.path.startsWith('/projects')) return '/#projects'
   if (route.path.startsWith('/blog')) return '/#blog'
   if (route.path !== '/') return route.path
-  return `/${scrollActiveHash.value}`
+  return `/${activeHash.value}`
 })
 
 const isMenuOpen = ref(false)
@@ -94,16 +106,16 @@ const toggleMenu = () => {
       <RouterLink class="brand" to="/#home" aria-label="回到首页">shiguijun</RouterLink>
 
       <nav class="nav-links" aria-label="主导航">
-        <RouterLink
+        <a
           v-for="item in navItems"
           :key="item.href"
           :class="{ 'is-active': activeHref === item.href }"
           :aria-current="activeHref === item.href ? 'page' : undefined"
-          :to="item.href"
-          @click="onNavClick(item.href)"
+          :href="item.href"
+          @click.prevent="onNavClick(item.href)"
         >
           {{ item.label }}
-        </RouterLink>
+        </a>
       </nav>
 
       <div class="header-actions">
