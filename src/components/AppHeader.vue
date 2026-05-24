@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { navItems, resumeFile } from '@/constants'
 import { useThemeStore } from '@/stores/theme'
 import { useRoute, useRouter } from 'vue-router'
@@ -8,93 +8,174 @@ const themeStore = useThemeStore()
 const route = useRoute()
 const router = useRouter()
 
-const activeHash = ref('#home')
-let isManualScrolling = false
-let manualTimer: ReturnType<typeof setTimeout> | null = null
+const activeHref = ref('/home')
+const isMenuOpen = ref(false)
+let skipRouteScrollPath: string | null = null
+let scrollCheckTimer: ReturnType<typeof setInterval> | null = null
 
-const sectionIds = navItems.map((item) => item.href.replace('/#', '#'))
+const sectionIds = navItems.map((item) => item.href.slice(1))
+const hrefBySectionId = new Map(navItems.map((item) => [item.href.slice(1), item.href]))
+const routeSectionIds: Record<string, string> = {
+  '/home': 'home',
+  '/about': 'about',
+  '/skills': 'skills',
+  '/projects': 'projects',
+  '/contact': 'contact',
+}
 
-let observer: IntersectionObserver | null = null
+const isSectionRoutePath = (path: string) => path in routeSectionIds
+const isHomeViewRoute = () => isSectionRoutePath(route.path)
 
-const startObserver = () => {
-  stopObserver()
-  const headerHeight = 68
-  observer = new IntersectionObserver(
-    (entries) => {
-      if (isManualScrolling) return
-      const visible: { id: string; ratio: number }[] = []
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          visible.push({ id: `#${entry.target.id}`, ratio: entry.intersectionRatio })
-        }
-      }
-      if (visible.length === 0) return
-      visible.sort((a, b) => b.ratio - a.ratio)
-      activeHash.value = visible[0].id
-    },
-    { rootMargin: `-${headerHeight}px 0px -40% 0px`, threshold: [0, 0.25, 0.5, 0.75, 1] },
-  )
+const getActiveHrefFromRoute = (path: string) => {
+  if (path.startsWith('/projects/')) return '/projects'
+  if (path.startsWith('/blog')) return '/blog'
+  if (path === '/') return '/home'
+  if (isSectionRoutePath(path)) return path
+  return path
+}
+
+const getHeaderHeight = () => {
+  return document.querySelector('.app-header')?.getBoundingClientRect().height ?? 68
+}
+
+const findActiveSectionId = () => {
+  if (window.scrollY <= 8) return 'home'
+
+  const markerY = window.scrollY + getHeaderHeight() + Math.min(window.innerHeight * 0.35, 280)
+  let activeSectionId = 'home'
+
   for (const id of sectionIds) {
-    const el = document.querySelector(id)
-    if (el) observer!.observe(el)
+    const el = document.getElementById(id)
+    if (!el) continue
+
+    const top = el.getBoundingClientRect().top + window.scrollY
+    if (top <= markerY) {
+      activeSectionId = id
+    } else {
+      break
+    }
+  }
+
+  const bottomDistance =
+    document.documentElement.scrollHeight - (window.scrollY + window.innerHeight)
+  if (bottomDistance <= 4) {
+    return sectionIds[sectionIds.length - 1]
+  }
+
+  return activeSectionId
+}
+
+const syncRouteFromScroll = (sectionId: string) => {
+  const href = hrefBySectionId.get(sectionId)
+  if (!href || href === '/blog' || route.path === href || window.location.pathname === href) return
+
+  skipRouteScrollPath = href
+  void router.replace(href).catch(() => {
+    if (skipRouteScrollPath === href) {
+      skipRouteScrollPath = null
+    }
+  })
+}
+
+const updateActiveFromScroll = () => {
+  if (!isHomeViewRoute()) return
+
+  const sectionId = findActiveSectionId()
+  const href = hrefBySectionId.get(sectionId)
+  if (!href) return
+
+  activeHref.value = href
+  syncRouteFromScroll(sectionId)
+}
+
+const scheduleScrollUpdate = () => {
+  updateActiveFromScroll()
+}
+
+const startScrollTracking = () => {
+  window.addEventListener('scroll', scheduleScrollUpdate, { passive: true })
+  window.addEventListener('resize', scheduleScrollUpdate)
+  scrollCheckTimer ??= setInterval(updateActiveFromScroll, 200)
+  scheduleScrollUpdate()
+}
+
+const stopScrollTracking = () => {
+  window.removeEventListener('scroll', scheduleScrollUpdate)
+  window.removeEventListener('resize', scheduleScrollUpdate)
+  if (scrollCheckTimer) {
+    clearInterval(scrollCheckTimer)
+    scrollCheckTimer = null
   }
 }
 
-const stopObserver = () => {
-  observer?.disconnect()
-  observer = null
-}
-
-const onNavClick = (href: string) => {
-  const hash = href.replace('/', '')
-  isManualScrolling = true
-  activeHash.value = hash
-  if (manualTimer) clearTimeout(manualTimer)
-  manualTimer = setTimeout(() => {
-    isManualScrolling = false
-    manualTimer = null
-  }, 1000)
-
-  const el = document.querySelector(hash)
+const scrollToSection = (sectionId: string, behavior: ScrollBehavior = 'smooth') => {
+  const el = document.getElementById(sectionId)
   if (el) {
-    const headerHeight = 68
-    const top = el.getBoundingClientRect().top + window.scrollY - headerHeight
-    window.scrollTo({ top, behavior: 'smooth' })
+    const top = el.getBoundingClientRect().top + window.scrollY - getHeaderHeight()
+    window.scrollTo({ top: Math.max(0, top), behavior })
   }
+}
 
-  router.push({ path: '/', hash: hash.slice(1) })
+const scrollToRouteSection = (path: string, behavior: ScrollBehavior = 'smooth') => {
+  const sectionId = routeSectionIds[path]
+  if (!sectionId) return
+
+  void nextTick(() => {
+    requestAnimationFrame(() => {
+      scrollToSection(sectionId, behavior)
+    })
+  })
 }
 
 onMounted(() => {
-  if (route.path === '/') {
-    nextTick(startObserver)
+  activeHref.value = getActiveHrefFromRoute(route.path)
+  if (isHomeViewRoute()) {
+    startScrollTracking()
+    scrollToRouteSection(route.path, 'auto')
   }
 })
 
 onBeforeUnmount(() => {
-  stopObserver()
-  if (manualTimer) clearTimeout(manualTimer)
+  stopScrollTracking()
 })
 
 watch(
   () => route.path,
   (path) => {
-    if (path === '/') {
-      setTimeout(startObserver, 100)
+    activeHref.value = getActiveHrefFromRoute(path)
+    const shouldSkipScroll = skipRouteScrollPath === path
+    if (shouldSkipScroll) {
+      skipRouteScrollPath = null
+    }
+
+    if (isHomeViewRoute()) {
+      startScrollTracking()
+      if (!shouldSkipScroll) {
+        scrollToRouteSection(path)
+      }
     } else {
-      stopObserver()
+      stopScrollTracking()
     }
   },
 )
 
-const activeHref = computed(() => {
-  if (route.path.startsWith('/projects')) return '/#projects'
-  if (route.path.startsWith('/blog')) return '/#blog'
-  if (route.path !== '/') return route.path
-  return `/${activeHash.value}`
-})
+const onNavClick = (href: string) => {
+  themeStore.closeThemePanel()
+  isMenuOpen.value = false
+  activeHref.value = href
 
-const isMenuOpen = ref(false)
+  if (href === '/blog') {
+    void router.push(href)
+    return
+  }
+
+  if (route.path === href) {
+    scrollToSection(href.slice(1))
+    return
+  }
+
+  void router.push(href)
+}
 
 const toggleMenu = () => {
   themeStore.closeThemePanel()
@@ -106,7 +187,7 @@ const toggleMenu = () => {
   <header class="app-header">
     <a class="skip-link" href="#main-content">跳到主要内容</a>
     <div class="header-inner">
-      <RouterLink class="brand" to="/#home" aria-label="回到首页">shiguijun</RouterLink>
+      <RouterLink class="brand" to="/home" aria-label="回到首页">shiguijun</RouterLink>
 
       <nav class="nav-links" aria-label="主导航">
         <a
@@ -257,16 +338,6 @@ const toggleMenu = () => {
         opacity: 1;
         transform: scaleX(1);
       }
-    }
-  }
-
-  &:hover a.is-active:not(:hover),
-  &:focus-within a.is-active:not(:focus-visible) {
-    color: var(--color-ink);
-
-    &::after {
-      opacity: 0;
-      transform: scaleX(0.45);
     }
   }
 }
