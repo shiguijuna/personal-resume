@@ -8,6 +8,8 @@ const themeStore = useThemeStore()
 const route = useRoute()
 
 const scrollActiveHash = ref('#home')
+const manualHash = ref<string | null>(null)
+let manualTimer: ReturnType<typeof setTimeout> | null = null
 
 const sectionIds = navItems.map(item => item.href.replace('/#', '#'))
 
@@ -18,6 +20,7 @@ const startObserver = () => {
   const headerHeight = 68
   observer = new IntersectionObserver(
     (entries) => {
+      if (manualHash.value) return
       const visible: { id: string; ratio: number }[] = []
       for (const entry of entries) {
         if (entry.isIntersecting) {
@@ -41,12 +44,24 @@ const stopObserver = () => {
   observer = null
 }
 
+const onNavClick = (href: string) => {
+  const hash = href.replace('/', '')
+  manualHash.value = hash
+  scrollActiveHash.value = hash
+  if (manualTimer) clearTimeout(manualTimer)
+  manualTimer = setTimeout(() => {
+    manualHash.value = null
+    manualTimer = null
+  }, 800)
+}
+
 onMounted(() => {
   if (route.path === '/') startObserver()
 })
 
 onBeforeUnmount(() => {
   stopObserver()
+  if (manualTimer) clearTimeout(manualTimer)
 })
 
 watch(() => route.path, (path) => {
@@ -85,6 +100,7 @@ const toggleMenu = () => {
           :class="{ 'is-active': activeHref === item.href }"
           :aria-current="activeHref === item.href ? 'page' : undefined"
           :to="item.href"
+          @click="onNavClick(item.href)"
         >
           {{ item.label }}
         </RouterLink>
