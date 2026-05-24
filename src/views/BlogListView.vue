@@ -20,7 +20,11 @@ const animateStaggerClass = (index: number): string => {
 useHead({
   title: `博客文章 | ${siteConfig.title}`,
   meta: [
-    { name: 'description', content: 'shiguijun 的前端实践博客，涵盖 Vue、小程序、中后台系统、数据可视化等项目的复盘与技术分享。' },
+    {
+      name: 'description',
+      content:
+        'shiguijun 的前端实践博客，涵盖 Vue、小程序、中后台系统、数据可视化等项目的复盘与技术分享。',
+    },
     { name: 'keywords', content: 'shiguijun,前端博客,Vue,小程序,uni-app,中后台,ECharts,技术复盘' },
   ],
 })
@@ -42,11 +46,7 @@ useHead({
       </section>
 
       <div class="filter-bar">
-        <button
-          class="filter-tag"
-          :class="{ active: activeTag === '' }"
-          @click="activeTag = ''"
-        >
+        <button class="filter-tag" :class="{ active: activeTag === '' }" @click="activeTag = ''">
           全部
         </button>
         <button
@@ -73,7 +73,13 @@ useHead({
             :to="`/blog/${post.slug}`"
           >
             <div class="post-cover">
-              <img :src="post.image" :alt="`${post.projectTitle} 文章封面`" loading="lazy" width="400" height="190" />
+              <img
+                :src="post.image"
+                :alt="`${post.projectTitle} 文章封面`"
+                loading="lazy"
+                width="400"
+                height="190"
+              />
               <span class="post-tag">{{ post.tag }}</span>
             </div>
             <div class="post-content">
@@ -96,7 +102,11 @@ useHead({
 <style lang="scss" scoped>
 .blog-listing-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 96%, var(--color-primary)) 0%, var(--color-bg) 400px);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-bg) 96%, var(--color-primary)) 0%,
+    var(--color-bg) 400px
+  );
 }
 
 .listing-shell {
@@ -105,7 +115,9 @@ useHead({
   padding: 34px 0 64px;
 }
 
-.breadcrumb { @include shared.breadcrumb; }
+.breadcrumb {
+  @include shared.breadcrumb;
+}
 
 .listing-hero {
   margin-top: 42px;
@@ -154,7 +166,10 @@ useHead({
   border: 1px solid var(--color-line);
   border-radius: 20px;
   cursor: pointer;
-  transition: color 0.2s, background 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    border-color 0.2s;
 
   &:hover {
     color: var(--color-primary);
@@ -192,7 +207,10 @@ useHead({
   border-radius: 10px;
   box-shadow: var(--shadow-soft);
   overflow: hidden;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
 
   &:hover,
   &:focus-visible {
@@ -215,8 +233,16 @@ useHead({
     inset: 0;
     content: '';
     background:
-      linear-gradient(180deg, color-mix(in srgb, var(--color-ink) 20%, transparent), color-mix(in srgb, var(--color-ink) 72%, transparent)),
-      linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 14%, transparent), transparent 48%);
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-ink) 20%, transparent),
+        color-mix(in srgb, var(--color-ink) 72%, transparent)
+      ),
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--color-primary) 14%, transparent),
+        transparent 48%
+      );
   }
 
   img {

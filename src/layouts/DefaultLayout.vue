@@ -43,6 +43,12 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="scss">
-:root { background: var(--color-bg); }
-html, body { background: var(--color-bg); color: var(--color-ink); }
+:root {
+  background: var(--color-bg);
+}
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+}
 </style>

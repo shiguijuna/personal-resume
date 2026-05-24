@@ -17,12 +17,7 @@ if (!post) {
 
 const relatedProject = post ? getProjectBySlug(post.projectSlug) : undefined
 const nextPost = post ? getNextPost(post.slug) : undefined
-const articleToc = [
-  '项目背景',
-  '前端组织',
-  '核心链路',
-  '落地经验',
-]
+const articleToc = ['项目背景', '前端组织', '核心链路', '落地经验']
 
 useHead({
   title: post ? `${post.title} | ${siteConfig.title} 博客` : '文章不存在',
@@ -125,8 +120,11 @@ useHead({
 <style lang="scss" scoped>
 .blog-page {
   min-height: 100vh;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-bg) 96%, var(--color-primary)) 0%, var(--color-bg) 400px);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-bg) 96%, var(--color-primary)) 0%,
+    var(--color-bg) 400px
+  );
 }
 
 .blog-shell {
@@ -135,7 +133,9 @@ useHead({
   padding: 34px 0 56px;
 }
 
-.breadcrumb { @include shared.breadcrumb; }
+.breadcrumb {
+  @include shared.breadcrumb;
+}
 
 .article-hero {
   margin-top: 42px;
@@ -174,7 +174,9 @@ useHead({
   font-size: 14px;
 }
 
-.tag-list { @include shared.tag-list; }
+.tag-list {
+  @include shared.tag-list;
+}
 
 .article-layout {
   display: grid;
@@ -263,14 +265,24 @@ useHead({
   }
 }
 
-.article-side { @include shared.sidebar-card; }
+.article-side {
+  @include shared.sidebar-card;
+}
 
-.side-block { @include shared.sidebar-block; }
+.side-block {
+  @include shared.sidebar-block;
+}
 
-.article-actions { @include shared.action-pair; }
+.article-actions {
+  @include shared.action-pair;
+}
 
-.outline-action { @include shared.outline-action; }
-.primary-action { @include shared.primary-action; }
+.outline-action {
+  @include shared.outline-action;
+}
+.primary-action {
+  @include shared.primary-action;
+}
 
 @media (max-width: 920px) {
   .article-layout {

@@ -1,15 +1,21 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <script>
-    (function(){var d=localStorage.getItem('theme-dark');if(d==='true')document.documentElement.classList.add('dark');else if(d==='false')document.documentElement.classList.add('light');var c=localStorage.getItem('theme-primary');if(c)document.documentElement.style.setProperty('--color-primary',c)})()
-  </script>
-</head>
-<body>
-  <div id="app"></div>
-  <script type="module" src="/src/main.ts"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <script>
+      ;(function () {
+        var d = localStorage.getItem('theme-dark')
+        if (d === 'true') document.documentElement.classList.add('dark')
+        else if (d === 'false') document.documentElement.classList.add('light')
+        var c = localStorage.getItem('theme-primary')
+        if (c) document.documentElement.style.setProperty('--color-primary', c)
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>

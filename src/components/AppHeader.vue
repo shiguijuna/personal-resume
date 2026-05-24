@@ -2,7 +2,7 @@
 import { computed, ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 import { navItems, resumeFile } from '@/constants'
 import { useThemeStore } from '@/stores/theme'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const themeStore = useThemeStore()
 const route = useRoute()
@@ -12,7 +12,7 @@ const activeHash = ref('#home')
 let isManualScrolling = false
 let manualTimer: ReturnType<typeof setTimeout> | null = null
 
-const sectionIds = navItems.map(item => item.href.replace('/#', '#'))
+const sectionIds = navItems.map((item) => item.href.replace('/#', '#'))
 
 let observer: IntersectionObserver | null = null
 
@@ -76,13 +76,16 @@ onBeforeUnmount(() => {
   if (manualTimer) clearTimeout(manualTimer)
 })
 
-watch(() => route.path, (path) => {
-  if (path === '/') {
-    setTimeout(startObserver, 100)
-  } else {
-    stopObserver()
-  }
-})
+watch(
+  () => route.path,
+  (path) => {
+    if (path === '/') {
+      setTimeout(startObserver, 100)
+    } else {
+      stopObserver()
+    }
+  },
+)
 
 const activeHref = computed(() => {
   if (route.path.startsWith('/projects')) return '/#projects'
@@ -128,19 +131,31 @@ const toggleMenu = () => {
           @select="themeStore.applyTheme"
           @toggle-dark="themeStore.toggleDark"
         />
-        <a class="resume-link" :href="resumeFile.path" :download="resumeFile.downloadName">下载简历</a>
+        <a class="resume-link" :href="resumeFile.path" :download="resumeFile.downloadName"
+          >下载简历</a
+        >
       </div>
 
       <button
         class="hamburger-btn"
-        @click="toggleMenu"
-        aria-label="打开菜单"
+        :aria-label="isMenuOpen ? '关闭菜单' : '打开菜单'"
         :aria-expanded="isMenuOpen"
+        @click="toggleMenu"
       >
         <span v-if="!isMenuOpen" class="hamburger-icon">
           <span></span><span></span><span></span>
         </span>
-        <svg v-else class="close-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <svg
+          v-else
+          class="close-icon"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        >
           <path d="M6 6l12 12M6 18L18 6" />
         </svg>
       </button>
@@ -228,7 +243,9 @@ const toggleMenu = () => {
       background: var(--color-primary);
       opacity: 0;
       transform: scaleX(0.45);
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
     }
 
     &:hover,
@@ -320,10 +337,18 @@ const toggleMenu = () => {
     padding: 12px 0;
   }
 
-  .brand { font-size: 20px; }
-  .nav-links { display: none; }
-  .header-actions { margin-left: auto; }
-  .hamburger-btn { display: flex; }
+  .brand {
+    font-size: 20px;
+  }
+  .nav-links {
+    display: none;
+  }
+  .header-actions {
+    margin-left: auto;
+  }
+  .hamburger-btn {
+    display: flex;
+  }
 
   .resume-link {
     min-height: 36px;

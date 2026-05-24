@@ -28,7 +28,7 @@ jobs:
             APP_DIR=/opt/personal-resume
             SRC_DIR="$APP_DIR/source"
             REPO_URL=https://github.com/shiguijuna/personal-resume.git
-            COMMIT=${{ github.sha }}
+            COMMIT=${{ github.event.workflow_run.head_sha || github.sha }}
 
             mkdir -p "$APP_DIR"
             if [ -d "$SRC_DIR/.git" ]; then
