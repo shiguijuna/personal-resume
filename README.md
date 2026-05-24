@@ -1,6 +1,6 @@
 # shiguijun 个人博客 / 作品集
 
-基于 Vue 3 + Element Plus + Pinia + Vue Router + Vite 构建的个人博客与作品集。
+基于 Vue 3 + Pinia + Vue Router + Vite 构建的个人博客与作品集。
 
 ## 功能
 
@@ -27,17 +27,17 @@ npm run preview
 
 ## 技术栈
 
-| 类别 | 技术 |
-|------|------|
-| 框架 | Vue 3 |
-| 路由 | Vue Router 4 |
-| 状态管理 | Pinia |
-| UI 库 | Element Plus |
-| 构建 | Vite |
-| 语言 | TypeScript |
-| 样式 | Sass, CSS Variables |
-| SEO | @unhead/vue |
-| 工具 | ESLint, Prettier |
+| 类别     | 技术                      |
+| -------- | ------------------------- |
+| 框架     | Vue 3                     |
+| 路由     | Vue Router 4              |
+| 状态管理 | Pinia                     |
+| UI       | 自定义组件, CSS Variables |
+| 构建     | Vite                      |
+| 语言     | TypeScript                |
+| 样式     | Sass, CSS Variables       |
+| SEO      | @unhead/vue               |
+| 工具     | ESLint, Prettier          |
 
 ## 部署
 

@@ -7,6 +7,9 @@ export const useThemeStore = defineStore('theme', () => {
   const isDark = ref(false)
   const showThemePanel = ref(false)
 
+  const getPreferredDark = () =>
+    window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
+
   const withTransition = (fn: () => void) => {
     document.documentElement.classList.add('theme-transition')
     fn()
@@ -23,34 +26,28 @@ export const useThemeStore = defineStore('theme', () => {
     })
   }
 
-  const toggleDark = () => {
-    isDark.value = !isDark.value
-    withTransition(() => {
-      if (isDark.value) {
-        document.documentElement.classList.add('dark')
-        document.documentElement.classList.remove('light')
-      } else {
-        document.documentElement.classList.remove('dark')
-        document.documentElement.classList.add('light')
-      }
-    })
-    localStorage.setItem('theme-dark', String(isDark.value))
+  const applyDarkClass = (dark: boolean) => {
+    document.documentElement.classList.toggle('dark', dark)
+    document.documentElement.classList.toggle('light', !dark)
   }
 
   const closeThemePanel = () => {
     showThemePanel.value = false
   }
 
+  const toggleDark = () => {
+    isDark.value = !isDark.value
+    withTransition(() => applyDarkClass(isDark.value))
+    localStorage.setItem('theme-dark', String(isDark.value))
+  }
+
   const initTheme = () => {
     const stored = localStorage.getItem('theme-primary')
     if (stored) applyTheme(stored)
+
     const storedDark = localStorage.getItem('theme-dark')
-    if (storedDark === 'true') {
-      isDark.value = true
-      document.documentElement.classList.add('dark')
-    } else if (storedDark === 'false') {
-      document.documentElement.classList.add('light')
-    }
+    isDark.value = storedDark === null ? getPreferredDark() : storedDark === 'true'
+    applyDarkClass(isDark.value)
   }
 
   return {

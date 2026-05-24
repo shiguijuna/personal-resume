@@ -32,11 +32,61 @@ const skills: { name: string; icon: string }[] = [
 </template>
 
 <style lang="scss" scoped>
-.section-anchor { @include shared.section-anchor; }
-.section-block { @include shared.section-block; }
-.section-heading { @include shared.section-heading; }
-.skills-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 16px; }
-.skill-item { display: flex; min-height: 72px; align-items: center; gap: 14px; padding: 0 22px; background: var(--color-panel); border: 1px solid var(--color-line); border-radius: 8px; } .skill-item .icon-box { display: inline-flex; flex: 0 0 34px; width: 34px; height: 34px; align-items: center; justify-content: center; color: #fff; padding: 6px; background: linear-gradient(135deg,var(--color-primary),var(--color-accent)); border-radius: 8px; } .skill-item .icon-box svg { width: 100%; height: 100%; } .skill-item strong { color: var(--color-about-secondary); font-size: 15px; }
-@media (max-width:1120px) { .skills-grid { grid-template-columns: repeat(3,1fr); } }
-@media (max-width:760px) { .section-block { width: min(100% - 32px, var(--container)); } .skills-grid { grid-template-columns: 1fr; } }
+.section-anchor {
+  @include shared.section-anchor;
+}
+.section-block {
+  @include shared.section-block;
+}
+.section-heading {
+  @include shared.section-heading;
+}
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+.skill-item {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  gap: 14px;
+  padding: 0 22px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+}
+.skill-item .icon-box {
+  display: inline-flex;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  padding: 6px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-radius: 8px;
+}
+.skill-item .icon-box svg {
+  width: 100%;
+  height: 100%;
+}
+.skill-item strong {
+  color: var(--color-about-secondary);
+  font-size: 15px;
+}
+@media (max-width: 1120px) {
+  .skills-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .section-block {
+    width: min(100% - 32px, var(--container));
+  }
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

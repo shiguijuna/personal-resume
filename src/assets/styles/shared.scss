@@ -110,7 +110,10 @@
 
 // --- 卡片悬停效果 ---
 @mixin card-hover {
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
 
   &:hover,
   &:focus-visible {

@@ -7,9 +7,7 @@ const handleGoHome = () => {
 
 useHead({
   title: '页面不存在 | shiguijun',
-  meta: [
-    { name: 'robots', content: 'noindex, nofollow' },
-  ],
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
 })
 </script>
 

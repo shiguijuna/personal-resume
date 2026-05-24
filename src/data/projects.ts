@@ -71,7 +71,15 @@ export const projects: ProjectItem[] = [
       '使用 ECharts 对订单数量、销售额、用户增长和服务销售情况进行图表展示',
       '通过路由懒加载降低首屏资源体积，提升系统访问速度',
     ],
-    modules: ['登录模块', '服务/商品管理', '订单管理', '应用管理', '客户管理', '数据统计', '系统设置'],
+    modules: [
+      '登录模块',
+      '服务/商品管理',
+      '订单管理',
+      '应用管理',
+      '客户管理',
+      '数据统计',
+      '系统设置',
+    ],
     highlights: [
       '后台功能结构清晰，能支撑运营人员高频查询和维护业务数据',
       '统一封装请求和登录失效处理，接口调用更稳定',
@@ -173,8 +181,7 @@ export const projects: ProjectItem[] = [
   },
 ]
 
-export const getProjectBySlug = (slug: string) =>
-  projects.find((project) => project.slug === slug)
+export const getProjectBySlug = (slug: string) => projects.find((project) => project.slug === slug)
 
 export const getNextProject = (slug: string) => {
   const index = projects.findIndex((project) => project.slug === slug)

@@ -5,41 +5,48 @@ interface ScrollOptions {
   threshold?: number
 }
 
-export function useScrollAnimation(options: ScrollOptions = {}) {
-  const {
-    rootMargin = '-60px 0px',
-    threshold = 0.15,
-  } = options
+let sharedObserver: IntersectionObserver | null = null
 
-  let observer: IntersectionObserver | null = null
-  let observed = new WeakSet<Element>()
-
-  const setupObserver = () => {
-    if (!('IntersectionObserver' in window)) return
-
-    observer?.disconnect()
-
-    observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-visible')
-            entry.target.classList.remove('animate-hidden')
-            observer?.unobserve(entry.target)
-          }
-        })
-      },
-      { rootMargin, threshold }
-    )
-
-    observed = new WeakSet()
-
-    document.querySelectorAll('.animate-scroll').forEach((el) => {
-      if (!observed.has(el)) {
-        observed.add(el)
-        observer?.observe(el)
+const createObserver = (options: Required<ScrollOptions>) =>
+  new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-visible')
+        entry.target.classList.remove('animate-hidden')
+        sharedObserver?.unobserve(entry.target)
       }
     })
+  }, options)
+
+const refreshManagedObserver = (options: Required<ScrollOptions>) => {
+  if (!('IntersectionObserver' in window)) {
+    document
+      .querySelectorAll('.animate-scroll')
+      .forEach((el) => el.classList.add('animate-visible'))
+    return
+  }
+
+  sharedObserver?.disconnect()
+  sharedObserver = createObserver(options)
+
+  document.querySelectorAll('.animate-scroll:not(.animate-visible)').forEach((el) => {
+    sharedObserver?.observe(el)
+  })
+}
+
+const disconnectManagedObserver = () => {
+  sharedObserver?.disconnect()
+  sharedObserver = null
+}
+
+export function useScrollAnimation(options: ScrollOptions = {}) {
+  const observerOptions = {
+    rootMargin: options.rootMargin ?? '-60px 0px',
+    threshold: options.threshold ?? 0.15,
+  }
+
+  const setupObserver = () => {
+    refreshManagedObserver(observerOptions)
   }
 
   onMounted(() => {
@@ -47,8 +54,7 @@ export function useScrollAnimation(options: ScrollOptions = {}) {
   })
 
   onUnmounted(() => {
-    observer?.disconnect()
-    observer = null
+    disconnectManagedObserver()
   })
 
   return {
@@ -58,19 +64,9 @@ export function useScrollAnimation(options: ScrollOptions = {}) {
 
 export function refreshScrollAnimation() {
   requestAnimationFrame(() => {
-    document.querySelectorAll('.animate-scroll:not(.animate-visible)').forEach((el) => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('animate-visible')
-              observer.unobserve(entry.target)
-            }
-          })
-        },
-        { rootMargin: '-60px 0px', threshold: 0.15 }
-      )
-      observer.observe(el)
+    refreshManagedObserver({
+      rootMargin: '-60px 0px',
+      threshold: 0.15,
     })
   })
 }

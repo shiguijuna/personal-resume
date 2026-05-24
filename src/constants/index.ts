@@ -4,8 +4,7 @@ export const siteConfig = {
   title: 'shiguijun | 前端开发工程师',
   description:
     'shiguijun的个人博客与作品集，展示 6 年前端开发经验、Vue / Nuxt / 小程序 / 中后台系统项目经历与技术文章。',
-  keywords:
-    'shiguijun,前端开发工程师,个人博客,作品集,Vue,Nuxt,小程序,uni-app,中后台,ECharts',
+  keywords: 'shiguijun,前端开发工程师,个人博客,作品集,Vue,Nuxt,小程序,uni-app,中后台,ECharts',
   ogImage: '/og-image.png', // 建议尺寸 1200×630，放 public/og-image.png
 }
 
@@ -14,9 +13,13 @@ const _p = ['180', '0373', '0972']
 export const getPhone = () => _p.join('')
 
 export const contactInfo = {
-  get phone() { return getPhone() },
+  get phone() {
+    return getPhone()
+  },
   email: 'shiguijuna@qq.com',
-  get wechat() { return getPhone() },
+  get wechat() {
+    return getPhone()
+  },
   city: '河南 · 郑州',
   district: '新乡市卫滨区源湖园',
   amapUrl:

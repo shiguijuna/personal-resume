@@ -22,7 +22,10 @@ useHead({
   title: project ? `${project.title} | ${siteConfig.title} 项目经历` : '项目不存在',
   meta: [
     { name: 'description', content: project?.desc || '' },
-    { name: 'keywords', content: project ? ['shiguijun', project.title, ...project.tags].join(',') : '' },
+    {
+      name: 'keywords',
+      content: project ? ['shiguijun', project.title, ...project.tags].join(',') : '',
+    },
   ],
 })
 </script>
@@ -138,7 +141,11 @@ useHead({
 .project-page {
   min-height: 100vh;
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-soft) 80%, transparent), var(--color-bg) 380px),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-soft) 80%, transparent),
+      var(--color-bg) 380px
+    ),
     var(--color-bg);
 }
 
@@ -148,7 +155,9 @@ useHead({
   padding: 34px 0 56px;
 }
 
-.breadcrumb { @include shared.breadcrumb; }
+.breadcrumb {
+  @include shared.breadcrumb;
+}
 
 .detail-hero {
   margin-top: 42px;
@@ -170,7 +179,9 @@ useHead({
   }
 }
 
-.tag-list { @include shared.tag-list; }
+.tag-list {
+  @include shared.tag-list;
+}
 
 .detail-layout {
   display: grid;
@@ -259,14 +270,24 @@ useHead({
   }
 }
 
-.summary-card { @include shared.sidebar-card; }
+.summary-card {
+  @include shared.sidebar-card;
+}
 
-.summary-block { @include shared.sidebar-block; }
+.summary-block {
+  @include shared.sidebar-block;
+}
 
-.detail-actions { @include shared.action-pair; }
+.detail-actions {
+  @include shared.action-pair;
+}
 
-.outline-action { @include shared.outline-action; }
-.primary-action { @include shared.primary-action; }
+.outline-action {
+  @include shared.outline-action;
+}
+.primary-action {
+  @include shared.primary-action;
+}
 
 @media (max-width: 920px) {
   .detail-layout {

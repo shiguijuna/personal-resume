@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { navItems, resumeFile, themeColors } from '@/constants'
-import { useThemeStore } from '@/stores/theme'
 import { watch, onMounted, onBeforeUnmount } from 'vue'
 
 const props = defineProps<{
@@ -15,8 +14,6 @@ const emit = defineEmits<{
   selectColor: [color: string]
   toggleDark: []
 }>()
-
-const themeStore = useThemeStore()
 
 let savedScrollY = 0
 
@@ -38,10 +35,13 @@ const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape') emit('close')
 }
 
-watch(() => props.isOpen, (val) => {
-  if (val) lockBody()
-  else unlockBody()
-})
+watch(
+  () => props.isOpen,
+  (val) => {
+    if (val) lockBody()
+    else unlockBody()
+  },
+)
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
@@ -55,23 +55,29 @@ onBeforeUnmount(() => {
 
 <template>
   <Transition name="drawer-fade">
-    <div
-      v-if="isOpen"
-      class="mobile-overlay"
-      @click="emit('close')"
-      aria-hidden="true"
-    />
+    <div v-if="isOpen" class="mobile-overlay" aria-hidden="true" @click="emit('close')" />
   </Transition>
   <Transition name="drawer-slide">
     <aside
       v-if="isOpen"
       class="mobile-drawer"
+      role="dialog"
+      aria-modal="true"
       aria-label="移动端导航菜单"
     >
       <div class="drawer-header">
         <RouterLink class="drawer-brand" to="/#home" @click="emit('close')">shiguijun</RouterLink>
         <button class="drawer-close" @click="emit('close')" aria-label="关闭菜单">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <line x1="18" y1="6" x2="6" y2="18" />
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
@@ -93,15 +99,39 @@ onBeforeUnmount(() => {
         <div class="drawer-dark">
           <span class="drawer-label">{{ isDark ? '暗色模式' : '亮色模式' }}</span>
           <button class="drawer-dark-btn" :class="{ active: isDark }" @click="emit('toggleDark')">
-            <svg v-if="isDark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              v-if="isDark"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
-            <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg
+              v-else
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
               <circle cx="12" cy="12" r="5" />
-              <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-              <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              <line x1="12" y1="1" x2="12" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="23" />
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+              <line x1="1" y1="12" x2="3" y2="12" />
+              <line x1="21" y1="12" x2="23" y2="12" />
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
             </svg>
           </button>
         </div>
@@ -125,7 +155,16 @@ onBeforeUnmount(() => {
           :download="resumeFile.downloadName"
           @click="emit('close')"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
@@ -226,7 +265,9 @@ onBeforeUnmount(() => {
     color: var(--color-ink);
     font-size: 16px;
     font-weight: 600;
-    transition: color 0.2s, background 0.2s;
+    transition:
+      color 0.2s,
+      background 0.2s;
 
     &:hover {
       color: var(--color-primary);
@@ -266,7 +307,10 @@ onBeforeUnmount(() => {
   border: 1px solid var(--color-line);
   border-radius: 8px;
   cursor: pointer;
-  transition: color 0.2s, background 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    border-color 0.2s;
 
   &:hover {
     color: var(--color-primary);
@@ -302,9 +346,13 @@ onBeforeUnmount(() => {
     border: 2px solid transparent;
     border-radius: 50%;
     cursor: pointer;
-    transition: transform 0.15s, border-color 0.2s;
+    transition:
+      transform 0.15s,
+      border-color 0.2s;
 
-    &:hover { transform: scale(1.15); }
+    &:hover {
+      transform: scale(1.15);
+    }
 
     &.active {
       border-color: var(--color-ink);
@@ -326,7 +374,9 @@ onBeforeUnmount(() => {
   background: var(--color-panel);
   border: 1px solid color-mix(in srgb, var(--color-primary) 24%, transparent);
   border-radius: 8px;
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
 
   &:hover {
     background: color-mix(in srgb, var(--color-primary) 6%, transparent);

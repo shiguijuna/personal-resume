@@ -136,8 +136,7 @@ export const posts: BlogPost[] = [
   },
 ]
 
-export const getPostBySlug = (slug: string) =>
-  posts.find((post) => post.slug === slug)
+export const getPostBySlug = (slug: string) => posts.find((post) => post.slug === slug)
 
 export const getPostByProjectSlug = (projectSlug: string) =>
   posts.find((post) => post.projectSlug === projectSlug)
