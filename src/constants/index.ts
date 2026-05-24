@@ -41,10 +41,10 @@ export const themeColors = [
 ] as const
 
 export const navItems = [
-  { label: '首页', href: '/#home' },
-  { label: '关于我', href: '/#about' },
-  { label: '技术栈', href: '/#skills' },
-  { label: '项目经历', href: '/#projects' },
-  { label: '博客', href: '/#blog' },
-  { label: '联系', href: '/#contact' },
+  { label: '首页', href: '/home' },
+  { label: '关于我', href: '/about' },
+  { label: '技术栈', href: '/skills' },
+  { label: '项目经历', href: '/projects' },
+  { label: '博客', href: '/blog' },
+  { label: '联系', href: '/contact' },
 ] as const
