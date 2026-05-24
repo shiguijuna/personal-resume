@@ -8,32 +8,41 @@ const themeStore = useThemeStore()
 const route = useRoute()
 const router = useRouter()
 
-const activeHash = ref('#home')
-let isManualScrolling = false
-let manualTimer: ReturnType<typeof setTimeout> | null = null
+const activeHref = ref('/home')
+const isMenuOpen = ref(false)
+let skipRouteScrollPath: string | null = null
+let scrollCheckTimer: ReturnType<typeof setInterval> | null = null
 
-const sectionIds = navItems.map((item) => item.href.replace('/#', '#'))
+const sectionIds = navItems.map((item) => item.href.slice(1))
+const hrefBySectionId = new Map(navItems.map((item) => [item.href.slice(1), item.href]))
+const routeSectionIds: Record<string, string> = {
+  '/home': 'home',
+  '/about': 'about',
+  '/skills': 'skills',
+  '/projects': 'projects',
+  '/contact': 'contact',
+}
 
-let observer: IntersectionObserver | null = null
+const isHomeViewRoute = () => route.path in routeSectionIds
 
-const startObserver = () => {
-  stopObserver()
-  const headerHeight = 68
-  observer = new IntersectionObserver(
-    (entries) => {
-      if (isManualScrolling) return
-      const visible: { id: string; ratio: number }[] = []
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          visible.push({ id: `#${entry.target.id}`, ratio: entry.intersectionRatio })
-        }
-      }
-      if (visible.length === 0) return
-      visible.sort((a, b) => b.ratio - a.ratio)
-      activeHash.value = visible[0].id
-    },
-    { rootMargin: `-${headerHeight}px 0px -40% 0px`, threshold: [0, 0.25, 0.5, 0.75, 1] },
-  )
+const getActiveHrefFromRoute = (path: string) => {
+  if (path.startsWith('/projects/')) return '/projects'
+  if (path.startsWith('/blog')) return '/blog'
+  if (path === '/') return '/home'
+  if (path in routeSectionIds) return path
+  return path
+}
+
+const getHeaderHeight = () => {
+  return document.querySelector('.app-header')?.getBoundingClientRect().height ?? 68
+}
+
+const findActiveSectionId = () => {
+  if (window.scrollY <= 8) return 'home'
+
+  const markerY = window.scrollY + getHeaderHeight() + Math.min(window.innerHeight * 0.35, 280)
+  let activeSectionId = 'home'
+
   for (const id of sectionIds) {
     const el = document.getElementById(id)
     if (!el) continue
@@ -78,20 +87,16 @@ const updateActiveFromScroll = () => {
   syncRouteFromScroll(sectionId)
 }
 
-const scheduleScrollUpdate = () => {
+const startScrollTracking = () => {
+  window.addEventListener('scroll', updateActiveFromScroll, { passive: true })
+  window.addEventListener('resize', updateActiveFromScroll)
+  scrollCheckTimer ??= setInterval(updateActiveFromScroll, 200)
   updateActiveFromScroll()
 }
 
-const startScrollTracking = () => {
-  window.addEventListener('scroll', scheduleScrollUpdate, { passive: true })
-  window.addEventListener('resize', scheduleScrollUpdate)
-  scrollCheckTimer ??= setInterval(updateActiveFromScroll, 200)
-  scheduleScrollUpdate()
-}
-
 const stopScrollTracking = () => {
-  window.removeEventListener('scroll', scheduleScrollUpdate)
-  window.removeEventListener('resize', scheduleScrollUpdate)
+  window.removeEventListener('scroll', updateActiveFromScroll)
+  window.removeEventListener('resize', updateActiveFromScroll)
   if (scrollCheckTimer) {
     clearInterval(scrollCheckTimer)
     scrollCheckTimer = null
@@ -132,13 +137,32 @@ onBeforeUnmount(() => {
 watch(
   () => route.path,
   (path) => {
-    if (path === '/') {
-      setTimeout(startObserver, 100)
+    activeHref.value = getActiveHrefFromRoute(path)
+    const shouldSkipScroll = skipRouteScrollPath === path
+    if (shouldSkipScroll) {
+      skipRouteScrollPath = null
+    }
+
+    if (isHomeViewRoute()) {
+      startScrollTracking()
+      if (!shouldSkipScroll) {
+        scrollToRouteSection(path)
+      }
     } else {
-      stopObserver()
+      stopScrollTracking()
     }
   },
 )
+
+const onNavClick = (href: string) => {
+  themeStore.closeThemePanel()
+  isMenuOpen.value = false
+  activeHref.value = href
+
+  if (href === '/blog') {
+    void router.push(href)
+    return
+  }
 
   if (route.path === href) {
     scrollToSection(href.slice(1))
