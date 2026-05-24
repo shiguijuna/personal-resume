@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { navItems, resumeFile } from '@/constants'
 import { useThemeStore } from '@/stores/theme'
 import { useRoute } from 'vue-router'
@@ -7,11 +7,61 @@ import { useRoute } from 'vue-router'
 const themeStore = useThemeStore()
 const route = useRoute()
 
+const scrollActiveHash = ref('#home')
+
+const sectionIds = navItems.map(item => item.href.replace('/#', '#'))
+
+let observer: IntersectionObserver | null = null
+
+const startObserver = () => {
+  stopObserver()
+  const headerHeight = 68
+  observer = new IntersectionObserver(
+    (entries) => {
+      const visible: { id: string; ratio: number }[] = []
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          visible.push({ id: `#${entry.target.id}`, ratio: entry.intersectionRatio })
+        }
+      }
+      if (visible.length === 0) return
+      visible.sort((a, b) => b.ratio - a.ratio)
+      scrollActiveHash.value = visible[0].id
+    },
+    { rootMargin: `-${headerHeight}px 0px -40% 0px`, threshold: [0, 0.25, 0.5, 0.75, 1] },
+  )
+  for (const id of sectionIds) {
+    const el = document.querySelector(id)
+    if (el) observer!.observe(el)
+  }
+}
+
+const stopObserver = () => {
+  observer?.disconnect()
+  observer = null
+}
+
+onMounted(() => {
+  if (route.path === '/') startObserver()
+})
+
+onBeforeUnmount(() => {
+  stopObserver()
+})
+
+watch(() => route.path, (path) => {
+  if (path === '/') {
+    setTimeout(startObserver, 100)
+  } else {
+    stopObserver()
+  }
+})
+
 const activeHref = computed(() => {
   if (route.path.startsWith('/projects')) return '/#projects'
   if (route.path.startsWith('/blog')) return '/#blog'
-  const hash = route.hash || '#home'
-  return `/${hash}`
+  if (route.path !== '/') return route.path
+  return `/${scrollActiveHash.value}`
 })
 
 const isMenuOpen = ref(false)
@@ -50,7 +100,6 @@ const toggleMenu = () => {
           @select="themeStore.applyTheme"
           @toggle-dark="themeStore.toggleDark"
         />
-        <RouterLink class="contact-link" to="/#contact">联系我</RouterLink>
         <a class="resume-link" :href="resumeFile.path" :download="resumeFile.downloadName">下载简历</a>
       </div>
 
@@ -183,7 +232,6 @@ const toggleMenu = () => {
   gap: 10px;
 }
 
-.contact-link,
 .resume-link {
   display: inline-flex;
   min-height: 40px;
@@ -194,15 +242,6 @@ const toggleMenu = () => {
   font-weight: 700;
   white-space: nowrap;
   border-radius: 8px;
-}
-
-.contact-link {
-  color: var(--color-panel);
-  background: var(--color-primary);
-  box-shadow: 0 10px 24px color-mix(in srgb, var(--color-primary) 20%, transparent);
-}
-
-.resume-link {
   color: var(--color-primary);
   background: var(--color-panel);
   border: 1px solid color-mix(in srgb, var(--color-primary) 24%, transparent);
@@ -256,10 +295,8 @@ const toggleMenu = () => {
   .brand { font-size: 20px; }
   .nav-links { display: none; }
   .header-actions { margin-left: auto; }
-  .header-actions .contact-link { display: none; }
   .hamburger-btn { display: flex; }
 
-  .contact-link,
   .resume-link {
     min-height: 36px;
     padding: 0 14px;
