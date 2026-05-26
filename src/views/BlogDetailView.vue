@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getNextPost, getPostBySlug } from '@/data/posts'
 import { getProjectBySlug } from '@/data/projects'
+import { watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { siteConfig } from '@/constants'
@@ -11,9 +12,15 @@ const slug = route.params.slug as string
 
 const post = getPostBySlug(slug)
 
-if (!post) {
-  router.replace('/404')
-}
+watch(
+  () => post,
+  (val) => {
+    if (!val) {
+      router.replace({ name: 'not-found' })
+    }
+  },
+  { immediate: true },
+)
 
 const relatedProject = post ? getProjectBySlug(post.projectSlug) : undefined
 const nextPost = post ? getNextPost(post.slug) : undefined

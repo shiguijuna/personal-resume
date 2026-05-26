@@ -3,10 +3,10 @@ import { projects } from '@/data/projects'
 </script>
 
 <template>
-  <section id="projects" class="section-block section-anchor animate-scroll">
+  <section id="projects" class="section-block section-anchor animate-scroll" aria-labelledby="projects-title">
     <div class="section-heading section-heading-row">
       <div>
-        <h2>项目经历</h2>
+        <h2 id="projects-title">项目经历</h2>
         <p>每个项目都可以进入详情页，查看职责、模块和技术实现。</p>
       </div>
       <span>共 {{ projects.length }} 个项目</span>

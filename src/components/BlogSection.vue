@@ -6,10 +6,10 @@ const morePosts = posts.slice(1)
 </script>
 
 <template>
-  <section id="blog" class="section-block section-anchor animate-scroll">
+  <section id="blog" class="section-block section-anchor animate-scroll" aria-labelledby="blog-title">
     <div class="section-heading section-heading-row">
       <div>
-        <h2>博客精选</h2>
+        <h2 id="blog-title">博客精选</h2>
         <p>围绕 5 个项目整理的前端实践复盘，把权限、支付、分包、数据可视化等经验讲清楚。</p>
       </div>
       <span>共 {{ posts.length }} 篇文章</span>
