@@ -6,7 +6,11 @@ const morePosts = posts.slice(1)
 </script>
 
 <template>
-  <section id="blog" class="section-block section-anchor animate-scroll" aria-labelledby="blog-title">
+  <section
+    id="blog"
+    class="section-block section-anchor animate-scroll"
+    aria-labelledby="blog-title"
+  >
     <div class="section-heading section-heading-row">
       <div>
         <h2 id="blog-title">博客精选</h2>

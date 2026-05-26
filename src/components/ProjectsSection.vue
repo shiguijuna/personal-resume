@@ -3,7 +3,11 @@ import { projects } from '@/data/projects'
 </script>
 
 <template>
-  <section id="projects" class="section-block section-anchor animate-scroll" aria-labelledby="projects-title">
+  <section
+    id="projects"
+    class="section-block section-anchor animate-scroll"
+    aria-labelledby="projects-title"
+  >
     <div class="section-heading section-heading-row">
       <div>
         <h2 id="projects-title">项目经历</h2>

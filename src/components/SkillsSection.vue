@@ -16,7 +16,11 @@ const skills: { name: string; icon: string }[] = [
 </script>
 
 <template>
-  <section id="skills" class="section-block section-anchor animate-scroll" aria-labelledby="skills-title">
+  <section
+    id="skills"
+    class="section-block section-anchor animate-scroll"
+    aria-labelledby="skills-title"
+  >
     <div class="section-heading">
       <h2 id="skills-title">技术栈</h2>
     </div>

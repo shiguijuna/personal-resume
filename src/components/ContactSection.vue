@@ -3,7 +3,11 @@ import { contactInfo } from '@/constants'
 </script>
 
 <template>
-  <footer id="contact" class="contact-section section-anchor animate-scroll" aria-labelledby="contact-title">
+  <footer
+    id="contact"
+    class="contact-section section-anchor animate-scroll"
+    aria-labelledby="contact-title"
+  >
     <div class="contact-inner">
       <div class="contact-copy">
         <h2 id="contact-title">联系我</h2>
