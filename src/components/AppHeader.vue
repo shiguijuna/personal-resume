@@ -160,7 +160,14 @@ const onNavClick = (href: string) => {
   activeHref.value = href
 
   if (href === '/blog') {
-    void router.push(href)
+    if (isHomeViewRoute()) {
+      scrollToSection('blog')
+    } else {
+      skipRouteScrollPath = '/home'
+      void router.push('/home').then(() => {
+        nextTick(() => scrollToSection('blog'))
+      })
+    }
     return
   }
 
@@ -246,6 +253,7 @@ const toggleMenu = () => {
     @close="isMenuOpen = false"
     @select-color="themeStore.applyTheme"
     @toggle-dark="themeStore.toggleDark"
+    @navigate="onNavClick"
   />
 </template>
 
