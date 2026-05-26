@@ -16,9 +16,13 @@ const skills: { name: string; icon: string }[] = [
 </script>
 
 <template>
-  <section id="skills" class="section-block section-anchor animate-scroll">
+  <section
+    id="skills"
+    class="section-block section-anchor animate-scroll"
+    aria-labelledby="skills-title"
+  >
     <div class="section-heading">
-      <h2>技术栈</h2>
+      <h2 id="skills-title">技术栈</h2>
     </div>
     <div class="skills-grid">
       <div v-for="skill in skills" :key="skill.name" class="skill-item">

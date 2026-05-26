@@ -49,9 +49,13 @@ const techAdvantages = [
 </script>
 
 <template>
-  <section id="advantages" class="section-block section-anchor animate-scroll">
+  <section
+    id="advantages"
+    class="section-block section-anchor animate-scroll"
+    aria-labelledby="advantages-title"
+  >
     <div class="section-heading">
-      <h2>技术优势</h2>
+      <h2 id="advantages-title">技术优势</h2>
       <p>相比单纯罗列技术名，更关注在真实项目中能解决什么问题。</p>
     </div>
     <div class="advantage-grid">

@@ -19,15 +19,11 @@ let savedScrollY = 0
 
 const lockBody = () => {
   savedScrollY = window.scrollY
-  document.body.style.position = 'fixed'
-  document.body.style.top = `-${savedScrollY}px`
-  document.body.style.width = '100%'
+  document.documentElement.style.overflow = 'hidden'
 }
 
 const unlockBody = () => {
-  document.body.style.position = ''
-  document.body.style.top = ''
-  document.body.style.width = ''
+  document.documentElement.style.overflow = ''
   window.scrollTo(0, savedScrollY)
 }
 
