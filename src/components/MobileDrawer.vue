@@ -32,6 +32,11 @@ const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape') emit('close')
 }
 
+const onNavigate = (href: string) => {
+  emit('navigate', href)
+  emit('close')
+}
+
 watch(
   () => props.isOpen,
   (val) => {
@@ -86,10 +91,7 @@ onBeforeUnmount(() => {
           :key="item.href"
           :class="{ 'is-active': activeHref === item.href }"
           :aria-current="activeHref === item.href ? 'page' : undefined"
-          @click="
-            emit('navigate', item.href)
-            emit('close')
-          "
+          @click="onNavigate(item.href)"
         >
           {{ item.label }}
         </button>
