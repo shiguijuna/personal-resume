@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { getNextProject, getProjectBySlug } from '@/data/projects'
 import { getPostByProjectSlug } from '@/data/posts'
-import { watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { siteConfig } from '@/constants'
 
 const route = useRoute()
 const router = useRouter()
-const slug = route.params.slug as string
-
-const project = getProjectBySlug(slug)
+const slug = computed(() => route.params.slug as string)
+const project = computed(() => getProjectBySlug(slug.value))
 
 watch(
-  () => project,
+  project,
   (val) => {
     if (!val) {
       router.replace({ name: 'not-found' })
@@ -22,16 +21,23 @@ watch(
   { immediate: true },
 )
 
-const nextProject = project ? getNextProject(project.slug) : undefined
-const relatedPost = project ? getPostByProjectSlug(project.slug) : undefined
+const nextProject = computed(() =>
+  project.value ? getNextProject(project.value.slug) : undefined,
+)
+const relatedPost = computed(() =>
+  project.value ? getPostByProjectSlug(project.value.slug) : undefined,
+)
 
 useHead({
-  title: project ? `${project.title} | ${siteConfig.title} 项目经历` : '项目不存在',
-  meta: [
-    { name: 'description', content: project?.desc || '' },
+  title: () =>
+    project.value ? `${project.value.title} | ${siteConfig.title} 项目经历` : '项目不存在',
+  meta: () => [
+    { name: 'description', content: project.value?.desc || '' },
     {
       name: 'keywords',
-      content: project ? ['shiguijun', project.title, ...project.tags].join(',') : '',
+      content: project.value
+        ? ['shiguijun', project.value.title, ...project.value.tags].join(',')
+        : '',
     },
   ],
 })

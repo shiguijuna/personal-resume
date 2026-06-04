@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { useHead } from '@unhead/vue'
 
+const router = useRouter()
+
 const handleGoHome = () => {
-  window.location.href = '/'
+  router.push('/')
 }
 
 useHead({

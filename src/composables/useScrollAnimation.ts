@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted } from 'vue'
 
 interface ScrollOptions {
   rootMargin?: string
@@ -18,7 +18,14 @@ const createObserver = (options: Required<ScrollOptions>) =>
     })
   }, options)
 
-const refreshManagedObserver = (options: Required<ScrollOptions>) => {
+const getOrCreateObserver = (options: Required<ScrollOptions>) => {
+  if (!sharedObserver) {
+    sharedObserver = createObserver(options)
+  }
+  return sharedObserver
+}
+
+const observeNewElements = (options: Required<ScrollOptions>) => {
   if (!('IntersectionObserver' in window)) {
     document
       .querySelectorAll('.animate-scroll')
@@ -26,17 +33,11 @@ const refreshManagedObserver = (options: Required<ScrollOptions>) => {
     return
   }
 
-  sharedObserver?.disconnect()
-  sharedObserver = createObserver(options)
+  const observer = getOrCreateObserver(options)
 
   document.querySelectorAll('.animate-scroll:not(.animate-visible)').forEach((el) => {
-    sharedObserver?.observe(el)
+    observer.observe(el)
   })
-}
-
-const disconnectManagedObserver = () => {
-  sharedObserver?.disconnect()
-  sharedObserver = null
 }
 
 export function useScrollAnimation(options: ScrollOptions = {}) {
@@ -46,15 +47,11 @@ export function useScrollAnimation(options: ScrollOptions = {}) {
   }
 
   const setupObserver = () => {
-    refreshManagedObserver(observerOptions)
+    observeNewElements(observerOptions)
   }
 
   onMounted(() => {
     setupObserver()
-  })
-
-  onUnmounted(() => {
-    disconnectManagedObserver()
   })
 
   return {
@@ -64,7 +61,7 @@ export function useScrollAnimation(options: ScrollOptions = {}) {
 
 export function refreshScrollAnimation() {
   requestAnimationFrame(() => {
-    refreshManagedObserver({
+    observeNewElements({
       rootMargin: '-60px 0px',
       threshold: 0.15,
     })
