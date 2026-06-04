@@ -2,7 +2,7 @@
 import { getNextProject, getProjectBySlug } from '@/data/projects'
 import { getPostByProjectSlug } from '@/data/posts'
 import { computed, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { siteConfig } from '@/constants'
 
@@ -20,6 +20,14 @@ watch(
   },
   { immediate: true },
 )
+
+onBeforeRouteUpdate((to) => {
+  const newSlug = to.params.slug as string
+  const newProject = getProjectBySlug(newSlug)
+  if (!newProject) {
+    router.replace({ name: 'not-found' })
+  }
+})
 
 const nextProject = computed(() =>
   project.value ? getNextProject(project.value.slug) : undefined,

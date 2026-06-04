@@ -38,7 +38,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="app-shell">
     <AppHeader />
-    <RouterView />
+    <RouterView :key="$route.fullPath" />
   </div>
 </template>
 
