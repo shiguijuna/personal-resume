@@ -23,9 +23,8 @@ watch(
 
 onBeforeRouteUpdate((to) => {
   const newSlug = to.params.slug as string
-  const newProject = getProjectBySlug(newSlug)
-  if (!newProject) {
-    router.replace({ name: 'not-found' })
+  if (!getProjectBySlug(newSlug)) {
+    return { name: 'not-found' }
   }
 })
 

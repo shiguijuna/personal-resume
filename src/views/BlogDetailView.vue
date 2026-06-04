@@ -23,9 +23,8 @@ watch(
 
 onBeforeRouteUpdate((to) => {
   const newSlug = to.params.slug as string
-  const newPost = getPostBySlug(newSlug)
-  if (!newPost) {
-    router.replace({ name: 'not-found' })
+  if (!getPostBySlug(newSlug)) {
+    return { name: 'not-found' }
   }
 })
 
