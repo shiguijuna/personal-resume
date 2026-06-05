@@ -21,11 +21,7 @@ jobs:
 
       - name: Create source bundle
         run: |
-          tar \
-            --exclude='.git' \
-            --exclude='node_modules' \
-            --exclude='dist' \
-            -czf "$RUNNER_TEMP/deploy-source.tgz" .
+          git archive --format=tar.gz --output=deploy-source.tgz HEAD
 
       - name: Upload source bundle
         uses: appleboy/scp-action@v0.1.7
@@ -34,7 +30,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_KEY }}
           port: ${{ secrets.SERVER_PORT }}
-          source: ${{ runner.temp }}/deploy-source.tgz
+          source: deploy-source.tgz
           target: /tmp
 
       - name: Build and deploy on server
