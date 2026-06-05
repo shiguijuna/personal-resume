@@ -13,8 +13,7 @@ const filteredPosts = computed(() => {
 })
 
 const animateStaggerClass = (index: number): string => {
-  const pos = index % 6
-  return pos === 0 ? '' : `animate-stagger-${pos}`
+  return `animate-stagger-${(index % 6) + 1}`
 }
 
 useHead({

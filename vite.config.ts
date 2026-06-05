@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     vue(),
     Components({
-      dts: false,
+      dts: 'src/components.d.ts',
     }),
   ],
   resolve: {

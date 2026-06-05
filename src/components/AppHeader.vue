@@ -273,6 +273,7 @@ const toggleMenu = () => {
     @close="isMenuOpen = false"
     @select-color="themeStore.applyTheme"
     @toggle-dark="themeStore.toggleDark"
+    @navigate="onNavClick"
   />
 </template>
 

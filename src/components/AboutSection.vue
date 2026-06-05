@@ -12,9 +12,13 @@ const profileFacts = [
 </script>
 
 <template>
-  <section id="about" class="about-section section-anchor animate-scroll">
+  <section
+    id="about"
+    class="about-section section-anchor animate-scroll"
+    aria-labelledby="about-title"
+  >
     <div class="section-heading">
-      <h2>关于 shiguijun</h2>
+      <h2 id="about-title">关于 shiguijun</h2>
       <p>更完整地展示教育背景、求职意向和可落地的前端业务能力。</p>
     </div>
     <div class="about-layout">

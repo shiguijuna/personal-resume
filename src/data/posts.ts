@@ -149,6 +149,6 @@ export const getAllTags = (): string[] => {
 
 export const getNextPost = (slug: string) => {
   const index = posts.findIndex((post) => post.slug === slug)
-  if (index === -1) return undefined
-  return posts[(index + 1) % posts.length]
+  if (index === -1 || index === posts.length - 1) return undefined
+  return posts[index + 1]
 }

@@ -13,26 +13,28 @@ const emit = defineEmits<{
   close: []
   selectColor: [color: string]
   toggleDark: []
+  navigate: [href: string]
 }>()
 
 let savedScrollY = 0
 
 const lockBody = () => {
   savedScrollY = window.scrollY
-  document.body.style.position = 'fixed'
-  document.body.style.top = `-${savedScrollY}px`
-  document.body.style.width = '100%'
+  document.documentElement.style.overflow = 'hidden'
 }
 
 const unlockBody = () => {
-  document.body.style.position = ''
-  document.body.style.top = ''
-  document.body.style.width = ''
+  document.documentElement.style.overflow = ''
   window.scrollTo(0, savedScrollY)
 }
 
 const handleKeydown = (e: KeyboardEvent) => {
   if (e.key === 'Escape') emit('close')
+}
+
+const onNavigate = (href: string) => {
+  emit('navigate', href)
+  emit('close')
 }
 
 watch(
@@ -84,16 +86,15 @@ onBeforeUnmount(() => {
         </button>
       </div>
       <nav class="drawer-nav">
-        <RouterLink
+        <button
           v-for="item in navItems"
           :key="item.href"
           :class="{ 'is-active': activeHref === item.href }"
           :aria-current="activeHref === item.href ? 'page' : undefined"
-          :to="item.href"
-          @click="emit('close')"
+          @click="onNavigate(item.href)"
         >
           {{ item.label }}
-        </RouterLink>
+        </button>
       </nav>
       <div class="drawer-actions">
         <div class="drawer-dark">

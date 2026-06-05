@@ -3,10 +3,14 @@ import { contactInfo } from '@/constants'
 </script>
 
 <template>
-  <footer id="contact" class="contact-section section-anchor animate-scroll">
+  <footer
+    id="contact"
+    class="contact-section section-anchor animate-scroll"
+    aria-labelledby="contact-title"
+  >
     <div class="contact-inner">
       <div class="contact-copy">
-        <h2>联系我</h2>
+        <h2 id="contact-title">联系我</h2>
         <p>如果你的团队正在寻找注重细节、能稳定推进业务落地的前端工程师，欢迎联系我。</p>
         <ul>
           <li>电话 / 微信：{{ contactInfo.phone }}</li>
