@@ -39,9 +39,9 @@ useHead({
   <div v-if="post" class="blog-page">
     <main id="main-content" class="blog-shell">
       <nav class="breadcrumb" aria-label="面包屑导航">
-        <RouterLink to="/#home">首页</RouterLink>
+        <RouterLink to="/home">首页</RouterLink>
         <span>/</span>
-        <RouterLink to="/#blog">博客精选</RouterLink>
+        <RouterLink to="/blog">博客精选</RouterLink>
         <span>/</span>
         <strong>{{ post.title }}</strong>
       </nav>
@@ -115,7 +115,7 @@ useHead({
       </div>
 
       <div class="article-actions">
-        <RouterLink class="outline-action" to="/#blog">返回博客精选</RouterLink>
+        <RouterLink class="outline-action" to="/blog">返回博客精选</RouterLink>
         <RouterLink v-if="nextPost" class="primary-action" :to="`/blog/${nextPost.slug}`">
           下一篇：{{ nextPost.projectTitle }}
         </RouterLink>
