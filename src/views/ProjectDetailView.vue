@@ -34,9 +34,9 @@ useHead({
   <div v-if="project" class="project-page">
     <main id="main-content" class="project-shell">
       <nav class="breadcrumb" aria-label="面包屑导航">
-        <RouterLink to="/#home">首页</RouterLink>
+        <RouterLink to="/home">首页</RouterLink>
         <span>/</span>
-        <RouterLink to="/#projects">项目经历</RouterLink>
+        <RouterLink to="/projects">项目经历</RouterLink>
         <span>/</span>
         <strong>{{ project.title }}</strong>
       </nav>
@@ -128,7 +128,7 @@ useHead({
       </div>
 
       <div class="detail-actions">
-        <RouterLink class="outline-action" to="/#projects">返回项目列表</RouterLink>
+        <RouterLink class="outline-action" to="/projects">返回项目列表</RouterLink>
         <RouterLink v-if="nextProject" class="primary-action" :to="`/projects/${nextProject.slug}`">
           查看下一个项目
         </RouterLink>

@@ -66,7 +66,7 @@ onBeforeUnmount(() => {
       aria-label="移动端导航菜单"
     >
       <div class="drawer-header">
-        <RouterLink class="drawer-brand" to="/#home" @click="emit('close')">shiguijun</RouterLink>
+        <RouterLink class="drawer-brand" to="/home" @click="emit('close')">shiguijun</RouterLink>
         <button class="drawer-close" @click="emit('close')" aria-label="关闭菜单">
           <svg
             width="22"

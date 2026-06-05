@@ -12,6 +12,8 @@ const activeHref = ref('/home')
 const isMenuOpen = ref(false)
 let skipRouteScrollPath: string | null = null
 let scrollCheckTimer: ReturnType<typeof setInterval> | null = null
+let routeScrollLockPath: string | null = null
+let routeScrollLockTimer: ReturnType<typeof setTimeout> | null = null
 
 const sectionIds = navItems.map((item) => item.href.slice(1))
 const hrefBySectionId = new Map(navItems.map((item) => [item.href.slice(1), item.href]))
@@ -66,6 +68,7 @@ const findActiveSectionId = () => {
 
 const syncRouteFromScroll = (sectionId: string) => {
   const href = hrefBySectionId.get(sectionId)
+  if (routeScrollLockPath) return
   if (!href || href === '/blog' || route.path === href || window.location.pathname === href) return
 
   skipRouteScrollPath = href
@@ -78,6 +81,7 @@ const syncRouteFromScroll = (sectionId: string) => {
 
 const updateActiveFromScroll = () => {
   if (!isHomeViewRoute()) return
+  if (routeScrollLockPath) return
 
   const sectionId = findActiveSectionId()
   const href = hrefBySectionId.get(sectionId)
@@ -103,6 +107,23 @@ const stopScrollTracking = () => {
   }
 }
 
+const lockRouteScrollSync = (path: string, behavior: ScrollBehavior) => {
+  routeScrollLockPath = path
+  if (routeScrollLockTimer) {
+    clearTimeout(routeScrollLockTimer)
+  }
+
+  routeScrollLockTimer = setTimeout(
+    () => {
+      if (routeScrollLockPath === path) {
+        routeScrollLockPath = null
+      }
+      routeScrollLockTimer = null
+    },
+    behavior === 'smooth' ? 900 : 500,
+  )
+}
+
 const scrollToSection = (sectionId: string, behavior: ScrollBehavior = 'smooth') => {
   const el = document.getElementById(sectionId)
   if (el) {
@@ -115,6 +136,8 @@ const scrollToRouteSection = (path: string, behavior: ScrollBehavior = 'smooth')
   const sectionId = routeSectionIds[path]
   if (!sectionId) return
 
+  activeHref.value = path
+  lockRouteScrollSync(path, behavior)
   void nextTick(() => {
     requestAnimationFrame(() => {
       scrollToSection(sectionId, behavior)
@@ -125,13 +148,17 @@ const scrollToRouteSection = (path: string, behavior: ScrollBehavior = 'smooth')
 onMounted(() => {
   activeHref.value = getActiveHrefFromRoute(route.path)
   if (isHomeViewRoute()) {
-    startScrollTracking()
     scrollToRouteSection(route.path, 'auto')
+    startScrollTracking()
   }
 })
 
 onBeforeUnmount(() => {
   stopScrollTracking()
+  if (routeScrollLockTimer) {
+    clearTimeout(routeScrollLockTimer)
+    routeScrollLockTimer = null
+  }
 })
 
 watch(
@@ -144,10 +171,10 @@ watch(
     }
 
     if (isHomeViewRoute()) {
-      startScrollTracking()
       if (!shouldSkipScroll) {
         scrollToRouteSection(path)
       }
+      startScrollTracking()
     } else {
       stopScrollTracking()
     }

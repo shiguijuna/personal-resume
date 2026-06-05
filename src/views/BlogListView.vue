@@ -34,7 +34,7 @@ useHead({
   <div class="blog-listing-page">
     <main id="main-content" class="listing-shell">
       <nav class="breadcrumb" aria-label="面包屑导航">
-        <RouterLink to="/#home">首页</RouterLink>
+        <RouterLink to="/home">首页</RouterLink>
         <span>/</span>
         <strong>博客文章</strong>
       </nav>

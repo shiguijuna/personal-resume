@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { useHead } from '@unhead/vue'
 
-const handleGoHome = () => {
-  window.location.href = '/'
-}
-
 useHead({
   title: '页面不存在 | shiguijun',
   meta: [{ name: 'robots', content: 'noindex, nofollow' }],
@@ -14,14 +10,14 @@ useHead({
 <template>
   <div class="error-page">
     <main id="main-content" class="error-shell">
-      <RouterLink class="brand" to="/" aria-label="回到首页">shiguijun</RouterLink>
+      <RouterLink class="brand" to="/home" aria-label="回到首页">shiguijun</RouterLink>
       <div class="error-body">
         <span class="error-code">404</span>
         <h1>页面未找到</h1>
         <p>你访问的页面不存在，可能已被移除或链接有误。</p>
         <div class="error-actions">
-          <button class="primary-btn" @click="handleGoHome">返回首页</button>
-          <RouterLink class="outline-btn" to="/#projects">查看项目</RouterLink>
+          <RouterLink class="primary-btn" to="/home">返回首页</RouterLink>
+          <RouterLink class="outline-btn" to="/projects">查看项目</RouterLink>
         </div>
       </div>
     </main>
