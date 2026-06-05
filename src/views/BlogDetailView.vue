@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { getNextPost, getPostBySlug } from '@/data/posts'
 import { getProjectBySlug } from '@/data/projects'
-import { watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useHead } from '@unhead/vue'
 import { siteConfig } from '@/constants'
 
 const route = useRoute()
 const router = useRouter()
-const slug = route.params.slug as string
 
-const post = getPostBySlug(slug)
+const slug = computed(() => route.params.slug as string)
+const post = computed(() => getPostBySlug(slug.value))
 
 watch(
-  () => post,
+  post,
   (val) => {
     if (!val) {
       router.replace({ name: 'not-found' })
@@ -22,15 +22,24 @@ watch(
   { immediate: true },
 )
 
-const relatedProject = post ? getProjectBySlug(post.projectSlug) : undefined
-const nextPost = post ? getNextPost(post.slug) : undefined
+const relatedProject = computed(() =>
+  post.value ? getProjectBySlug(post.value.projectSlug) : undefined,
+)
+const nextPost = computed(() => (post.value ? getNextPost(post.value.slug) : undefined))
 const articleToc = ['项目背景', '前端组织', '核心链路', '落地经验']
 
 useHead({
-  title: post ? `${post.title} | ${siteConfig.title} 博客` : '文章不存在',
+  title: computed(() =>
+    post.value ? `${post.value.title} | ${siteConfig.title} 博客` : '文章不存在',
+  ),
   meta: [
-    { name: 'description', content: post?.desc || '' },
-    { name: 'keywords', content: post ? ['shiguijun', post.title, ...post.tags].join(',') : '' },
+    { name: 'description', content: computed(() => post.value?.desc || '') },
+    {
+      name: 'keywords',
+      content: computed(() =>
+        post.value ? ['shiguijun', post.value.title, ...post.value.tags].join(',') : '',
+      ),
+    },
   ],
 })
 </script>
