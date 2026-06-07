@@ -259,7 +259,7 @@ onBeforeUnmount(() => {
   padding: 12px 0;
   flex: 1;
 
-  a {
+  button {
     display: flex;
     align-items: center;
     padding: 14px 24px;

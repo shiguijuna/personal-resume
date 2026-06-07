@@ -12,7 +12,6 @@ const createObserver = (options: Required<ScrollOptions>) =>
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add('animate-visible')
-        entry.target.classList.remove('animate-hidden')
         sharedObserver?.unobserve(entry.target)
       }
     })
